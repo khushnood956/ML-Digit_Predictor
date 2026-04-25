@@ -1,0 +1,95 @@
+version: '3.8'
+
+services:
+  # Layer 2: Python FastAPI Inference Service
+  python-service:
+    build:
+      context: ./python-inference-service
+      dockerfile: Dockerfile
+    container_name: mnist-python-service
+    ports:
+      - "8000:8000"
+    environment:
+      - MODEL_PATH=/app/mnist_cnn_model.h5
+      - LOG_LEVEL=INFO
+      - SERVICE_HOST=0.0.0.0
+      - SERVICE_PORT=8000
+    volumes:
+      - ./python-inference-service:/app
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - mnist-network
+    restart: unless-stopped
+
+  # Layer 3: Spring Boot REST API Gateway
+  spring-boot-api:
+    build:
+      context: ./spring-boot-api
+      dockerfile: Dockerfile
+    container_name: mnist-spring-api
+    ports:
+      - "8080:8080"
+    environment:
+      - PYTHON_SERVICE_URL=http://python-service:8000
+      - PYTHON_SERVICE_TIMEOUT=30000
+      - LOG_LEVEL=INFO
+    depends_on:
+      python-service:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - mnist-network
+    restart: unless-stopped
+
+  # Layer 4: Frontend (Optional - served with nginx)
+  frontend:
+    image: nginx:alpine
+    container_name: mnist-frontend
+    ports:
+      - "80:80"
+    volumes:
+      - ./frontend:/usr/share/nginx/html:ro
+    depends_on:
+      - spring-boot-api
+    networks:
+      - mnist-network
+    restart: unless-stopped
+
+networks:
+  mnist-network:
+    driver: bridge
+
+# Usage:
+# 
+# Build and start all services:
+#   docker-compose up -d --build
+# 
+# View logs:
+#   docker-compose logs -f
+#   docker-compose logs -f python-service
+#   docker-compose logs -f spring-boot-api
+# 
+# Stop services:
+#   docker-compose down
+# 
+# Stop and remove volumes:
+#   docker-compose down -v
+# 
+# Rebuild specific service:
+#   docker-compose up -d --build python-service
+# 
+# Access services:
+#   Frontend: http://localhost:80
+#   Spring Boot API: http://localhost:8080
+#   Python Service: http://localhost:8000
+#   Python Service Docs: http://localhost:8000/docs
