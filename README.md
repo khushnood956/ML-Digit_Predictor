@@ -318,15 +318,11 @@ spring.application.name=digit-classification-api
 3. Run tests
 4. Submit a pull request
 
-## 📄 License
-
-[Add your license here]
 
 ## 👥 Team
 
 - **Project**: MNIST Digit Classification
-- **Course**: ML Lab Mid (SP24)
-- **Roll Numbers**: BCS-051-076
+
 
 ## 📧 Contact
 
