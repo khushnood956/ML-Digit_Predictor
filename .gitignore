@@ -165,3 +165,45 @@ ehthumbs.db
 Desktop.ini
 
 RESTRUCTURING_COMPLETE.md
+
+# Data (very important)
+data/
+datasets/
+*.csv
+*.tsv
+*.parquet
+
+# Experiment tracking
+mlruns/
+wandb/
+wandb/
+*.ckpt
+
+# Model checkpoints (keep selective, not everything)
+checkpoints/
+
+# Docker runtime
+docker-data/
+*.pid
+*.cid
+
+*.out
+*.err
+*.stackdump
+
+# Poetry / Pipenv
+poetry.lock
+Pipfile.lock
+
+# Ruff / mypy / pyright
+.mypy_cache/
+.pyright/
+.ruff_cache/
+
+# Coverage variants
+coverage.xml
+*.cover
+
+# Spring Boot devtools
+restart.log
+
