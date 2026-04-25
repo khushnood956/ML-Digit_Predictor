@@ -99,6 +99,20 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 
+# Local Documentation (kept in root for reference, not needed in repo)
+# Remove these after first setup or move to docs/ folder
+QUICK_START.txt
+RESTRUCTURING_COMPLETE.md
+BATCH_SCRIPTS_*.md
+START_HERE.md
+
+# Batch scripts in root (now in scripts/ folder, these are duplicates)
+START_ALL.bat
+START_QUICK.bat
+STOP_ALL.bat
+CHECK_SETUP.bat
+MENU.bat
+
 # Docker
 .dockerignore
 Dockerfile.bak
